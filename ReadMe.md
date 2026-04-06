@@ -66,11 +66,11 @@ JWT_SECRET=your_super_secret_jwt_key
 **1. Protected Routes**
 Any route marked as Protected requires a valid JWT token.
 
- *Pass the token in the headers of your request.
+ * Pass the token in the headers of your request.
 
- *Key: Authorization
+ * Key: Authorization
 
- *Value: Bearer <your_token_here>
+ * Value: Bearer <your_token_here>
 
 **2. Creating a Post (Image Uploads)**
 The POST /api/posts endpoint handles physical file uploads. You cannot send standard JSON to this route.
