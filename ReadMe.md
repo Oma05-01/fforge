@@ -1,4 +1,4 @@
-# QuestNest API Documentation
+# BlogPost API Documentation
 
 A robust, modular RESTful API built to handle user authentication, database management, and cloud-based image uploads. 
 
@@ -25,7 +25,7 @@ Create a .env file in the root directory and add the following keys:
 
 Code snippet
 PORT=5000
-MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/questnest_db?retryWrites=true&w=majority
+MONGO_URI=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/blog_posts_db?retryWrites=true&w=majority
 
 
 # Cloudinary Credentials
@@ -80,11 +80,11 @@ When testing in Postman, Thunder Client, or making frontend fetch / axios reques
 
 **Required Form Data Fields:**
 
- *title (Text)
+ * title (Text)
 
- *body (Text)
+ * body (Text)
 
- *image (File) - Must be a .jpg, .jpeg, or .png
+ * image (File) - Must be a .jpg, .jpeg, or .png
 
 **3. Deleting Posts**
 When a DELETE request is successfully made to /api/posts/:id, the API will automatically extract the public_id from the post's Cloudinary URL and permanently delete the image from the cloud storage to prevent memory leaks.
