@@ -1,21 +1,41 @@
 const Post = require("../models/Post");
+const cloudinary = require("../config/cloudinary");
+const fs = require("fs");
 
 // @route   POST /api/posts
 const createPost = async (req, res) => {
   const { title, content } = req.body;
+  let imageUrl;
 
   try {
+    if (req.file) {
+      // 2. Upload the local file to Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "blog_posts",
+      });
+
+      // 3. Save the secure URL provided by Cloudinary
+      imageUrl = result.secure_url;
+
+      // 4. Delete the file from your local 'uploads' folder to save space
+      fs.unlinkSync(req.file.path);
+    }
+    
     const post = await Post.create({
       title,
       content,
+      image: imageUrl,
       // req.user is available because this route is protected
       author: req.user._id,
     });
 
     res.status(201).json(post);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+  if (req.file && fs.existsSync(req.file.path)) {
+    fs.unlinkSync(req.file.path);
   }
+  res.status(500).json({ message: error.message });
+}
 };
 
 // @route   GET /api/posts
@@ -104,6 +124,20 @@ const deletePost = async (req, res) => {
 
     if (post.author.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Not authorized to delete this post" });
+    }
+
+    if (post.image) {
+      // Extract the public_id from the Cloudinary URL
+      // This splits the URL by slashes, grabs the last part (the filename), 
+      // and removes the .jpg/.png extension.
+      const urlParts = post.image.split("/");
+      const filename = urlParts[urlParts.length - 1].split(".")[0];
+      
+      // Reconstruct the public_id (folder_name/filename)
+      const publicId = `blog_posts/${filename}`; 
+
+      // Tell Cloudinary to destroy it!
+      await cloudinary.uploader.destroy(publicId);
     }
 
     await post.deleteOne();
