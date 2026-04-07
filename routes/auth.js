@@ -7,7 +7,6 @@ const { isAdmin } = require("../middleware/isAdmin");
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
-// protect + isAdmin means: must be logged in AND must be an admin
 router.post("/create-admin", protect, isAdmin, createAdmin);
 
 module.exports = router;

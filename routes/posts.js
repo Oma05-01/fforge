@@ -12,12 +12,13 @@ const {
 } = require("../controllers/postController");
 const { protect } = require("../middleware/auth");
 
+router.get("/my-posts", protect, getMyPosts);
+
 // Public
 router.get("/", getAllPosts);
 router.get("/:id", getPostById);
 
 // Protected — must be logged in
-router.get("/my-posts", protect, getMyPosts);
 router.put("/:id", protect, updatePost);
 router.delete("/:id", protect, deletePost);
 router.patch("/:id/publish", protect, togglePublish);
